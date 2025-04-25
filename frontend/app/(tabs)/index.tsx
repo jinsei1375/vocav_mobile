@@ -2,8 +2,23 @@ import { StyleSheet } from 'react-native';
 
 import EditScreenInfo from '@/src/components/EditScreenInfo';
 import { Text, View } from '@/src/components/Themed';
+import { useEffect } from 'react';
+import { supabase } from '@/src/lib/supabaseClient';
 
 export default function TabOneScreen() {
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data, error } = await supabase.from('vocab').select('*');
+      if (error) {
+        console.error('Error fetching data:', error);
+      }
+      if (data) {
+        console.log('Fetched data:', data);
+      }
+    };
+    fetchData();
+  }, []);
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Tab One two</Text>
