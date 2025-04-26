@@ -1,4 +1,6 @@
-
+using Api.Interfaces;
+using Api.Repositories;
+using Api.Services;
 
 DotNetEnv.Env.Load(); 
 
@@ -21,6 +23,12 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// DI登録
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<IVocabRepository, VocabRepository>();
+builder.Services.AddScoped<VocabService>();
+
 
 var app = builder.Build();
 

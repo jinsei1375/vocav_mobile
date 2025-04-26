@@ -1,0 +1,21 @@
+using Api.Models.Entities;
+using Api.Repositories;
+using Api.Interfaces;
+
+namespace Api.Services
+{
+  public class VocabService
+  {
+    private readonly IVocabRepository _vocabRepository;
+
+    public VocabService(IVocabRepository vocabRepository)
+    {
+      _vocabRepository = vocabRepository;
+    }
+
+    public async Task<List<Vocab>> GetAllVocabsAsync()
+    {
+      return await _vocabRepository.GetVocabsAsync();
+    }
+  }
+}
