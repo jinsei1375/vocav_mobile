@@ -7,6 +7,8 @@ namespace Api.Models.Entities
   {
     [JsonPropertyName("id")]
     public long Id { get; set; }
+    [JsonPropertyName("user_id")]
+    public required Guid User_Id { get; set; }
 
     [JsonPropertyName("word")]
     public string Word { get; set; } = string.Empty;
