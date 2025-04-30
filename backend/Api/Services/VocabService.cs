@@ -13,9 +13,9 @@ namespace Api.Services
       _vocabRepository = vocabRepository;
     }
 
-    public async Task<List<Vocab>> GetAllVocabsAsync()
+    public async Task<List<Vocab>> GetAllVocabsAsync(string token)
     {
-      return await _vocabRepository.GetVocabsAsync();
+      return await _vocabRepository.GetVocabsAsync(token);
     }
   }
 }

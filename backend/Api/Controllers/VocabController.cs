@@ -16,9 +16,10 @@ namespace Api.Controllers
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<Vocab>>> Get()
+    public async Task<IActionResult> Get([FromHeader(Name = "Authorization")] string authHeader)
     {
-      var result = await _vocabService.GetAllVocabsAsync();
+      var token = authHeader?.Replace("Bearer ", "");
+      var result = await _vocabService.GetAllVocabsAsync(token);
       return Ok(result);
     }
   }
