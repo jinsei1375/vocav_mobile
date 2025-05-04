@@ -5,6 +5,7 @@ import { Text, View } from '@/src/components/Themed';
 import * as WebBrowser from 'expo-web-browser';
 import { AuthButton } from '@/src/components/AuthButton';
 import { VocabList } from '@/src/components/VocabList';
+import { VocabForm } from '@/src/components/VocabForm';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -14,6 +15,7 @@ export default function TabOneScreen() {
       <Text style={styles.title}>Tab One two</Text>
       <EditScreenInfo path="app/(tabs)/index.tsx" />
       <AuthButton />
+      <VocabForm />
       <VocabList />
     </View>
   );

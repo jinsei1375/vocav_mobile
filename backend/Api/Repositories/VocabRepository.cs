@@ -1,6 +1,8 @@
 using System.Text.Json;
 using Api.Models.Entities;
 using Api.Interfaces;
+using Api.Models.Dtos;
+using System.Text;
 
 namespace Api.Repositories
 {
@@ -38,6 +40,27 @@ namespace Api.Repositories
       catch (Exception ex)
       {
         throw new Exception($"Error fetching data from Supabase: {ex.Message}");
+      }
+    }
+
+    public async Task<Vocab> CreateVocabAsync(string token, VocabDto dto)
+    {
+      try {
+        var request = new HttpRequestMessage(HttpMethod.Post, $"{_supabaseUrl}/rest/v1/vocab");
+        request.Headers.Add("apikey", _supabaseKey);
+        request.Headers.Add("Authorization", $"Bearer {token}");
+
+        var json = JsonSerializer.Serialize(dto);
+        request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+
+        var response = await _httpClient.SendAsync(request);
+        response.EnsureSuccessStatusCode();
+        var content = await response.Content.ReadAsStringAsync();
+        var created = JsonSerializer.Deserialize<List<Vocab>>(content);
+
+        return created?.FirstOrDefault();
+      } catch (HttpRequestException ex) {
+        throw new Exception($"Error creating vocab: {ex.Message}");
       }
     }
   }
