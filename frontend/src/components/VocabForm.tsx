@@ -11,8 +11,6 @@ export const VocabForm = () => {
     const { data: session } = await supabase.auth.getSession();
     const token = session?.session?.access_token;
     setLoading(true);
-    console.log('token', token);
-    var userId = session?.session?.user.id;
 
     fetch(`${process.env.EXPO_PUBLIC_API_BASE_URL}/vocab`, {
       method: 'POST',
@@ -20,7 +18,7 @@ export const VocabForm = () => {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ userId, word, meaning }),
+      body: JSON.stringify({ word, meaning }),
     })
       .then((response) => response.json())
       .then(() => {
