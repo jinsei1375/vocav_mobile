@@ -1,3 +1,4 @@
+using System.Security.Principal;
 using Api.Models.Dtos;
 using Api.Models.Entities;
 
@@ -5,7 +6,7 @@ namespace Api.Interfaces
 {
   public interface IVocabRepository
   {
-    Task<List<Vocab>> GetVocabsAsync(string token);
-    Task<Vocab> CreateVocabAsync(string token, VocabDto vocabDto);
+    Task<string> GetVocabsAsync(SupabaseSessionDto supabaseDto);
+    Task<string> CreateVocabAsync(SupabaseSessionDto supabaseDto, VocabDto vocabDto);
   }
 }

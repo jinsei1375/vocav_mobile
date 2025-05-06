@@ -16,31 +16,18 @@ namespace Api.Controllers
       _vocabService = vocabService;
     }
 
-    [HttpGet]
-    public async Task<IActionResult> Get([FromHeader(Name = "Authorization")] string authHeader)
+    [HttpPost]
+    public async Task<IActionResult> GetVocb([FromBody] SupabaseSessionDto sessionDto)
     {
-      var token = authHeader?.Replace("Bearer ", "");
-      var result = await _vocabService.GetAllVocabsAsync(token);
+      var result = await _vocabService.GetAllVocabsAsync(sessionDto);
       return Ok(result);
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Post([FromHeader(Name = "Authorization")] string authHeader, [FromBody] VocabDto vocabDto)
+    [HttpPost("create")]
+    public async Task<IActionResult> CreateVocab([FromBody] CreateVocabRequest request)
     {
-      if (string.IsNullOrEmpty(authHeader)) return Unauthorized();
-
-        var token = authHeader.Replace("Bearer ", "");
-
-        try
-      {
-          var result = await _vocabService.CreateVocabAsync(token, vocabDto);
-          return result is not null ? Ok(result) : StatusCode(500, new { message = "登録に失敗しました" });
-      }
-      catch (Exception ex)
-      {
-          // 例外内容も返す（開発時のみ）
-          return StatusCode(500, new { message = "サーバーエラー", error = ex.Message });
-      }
+      var result = await _vocabService.CreateVocabAsync(request.Session, request.Vocab);
+      return Ok(result);
     }
   }
 }

@@ -1,25 +1,63 @@
-
-using System.Text.Json.Serialization;
+using Supabase.Postgrest.Models;
+using Supabase.Postgrest.Attributes;
+using Newtonsoft.Json;
 
 namespace Api.Models.Entities
 {
-  public class Vocab
+  [Table("vocab")]
+  public class Vocab : BaseModel
   {
-    [JsonPropertyName("id")]
-    public long Id { get; set; }
-    [JsonPropertyName("user_id")]
-    public required Guid User_Id { get; set; }
+    public Vocab() {}
 
-    [JsonPropertyName("word")]
+    [PrimaryKey("id", false)]
+    [Column("id")]
+    [JsonProperty("id")]
+    public long Id { get; private set; } 
+
+    [Column("user_id")]
+    [JsonProperty("user_id")]
+    public Guid User_Id { get; set; } = Guid.Empty;
+
+    [Column("word")]
+    [JsonProperty("word")]
     public string Word { get; set; } = string.Empty;
 
-    [JsonPropertyName("meaning")]
+    [Column("meaning")]
+    [JsonProperty("meaning")]
     public string Meaning { get; set; } = string.Empty;
 
-    [JsonPropertyName("created_at")]
+    [Column("created_at")]
+    [JsonProperty("created_at")]
     public DateTime Created_At { get; set; }
 
-    [JsonPropertyName("updated_at")]
+    [Column("updated_at")]
+    [JsonProperty("updated_at")]
+    public DateTime Updated_At { get; set; }
+  }
+
+  [Table("vocab")]
+  public class AddVocab : BaseModel
+  {
+    public AddVocab() {}
+
+    [Column("user_id")]
+    [JsonProperty("user_id")]
+    public Guid User_Id { get; set; } = Guid.Empty;
+
+    [Column("word")]
+    [JsonProperty("word")]
+    public string Word { get; set; } = string.Empty;
+
+    [Column("meaning")]
+    [JsonProperty("meaning")]
+    public string Meaning { get; set; } = string.Empty;
+
+    [Column("created_at")]
+    [JsonProperty("created_at")]
+    public DateTime Created_At { get; set; }
+
+    [Column("updated_at")]
+    [JsonProperty("updated_at")]
     public DateTime Updated_At { get; set; }
   }
 }

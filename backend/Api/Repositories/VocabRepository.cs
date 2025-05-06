@@ -1,66 +1,51 @@
-using System.Text.Json;
 using Api.Models.Entities;
 using Api.Interfaces;
 using Api.Models.Dtos;
-using System.Text;
+using Newtonsoft.Json;
+using Supabase.Postgrest;
 
 namespace Api.Repositories
 {
   public class VocabRepository: IVocabRepository
   {
-    private readonly HttpClient _httpClient;
-    private readonly string _supabaseUrl;
-    private readonly string _supabaseKey;
+    private readonly Supabase.Client _supabaseClient;
 
-    public VocabRepository(HttpClient httpClient)
+    public VocabRepository(Supabase.Client supabaseClient)
     {
-      _httpClient = httpClient;
-      _supabaseUrl = Environment.GetEnvironmentVariable("SUPABASE_URL") 
-        ?? throw new ArgumentNullException(nameof(_supabaseUrl), "SUPABASE_URL is not set in environment variables.");
-      _supabaseKey = Environment.GetEnvironmentVariable("SUPABASE_API_KEY") 
-        ?? throw new ArgumentNullException(nameof(_supabaseKey), "SUPABASE_API_KEY is not set in environment variables.");
+      _supabaseClient = supabaseClient;
     }
 
-    public async Task<List<Vocab>> GetVocabsAsync(string token)
+    public async Task<string> GetVocabsAsync(SupabaseSessionDto supabaseDto)
     {
-      try
-      {
-        var request = new HttpRequestMessage(HttpMethod.Get, $"{_supabaseUrl}/rest/v1/vocab");
-        request.Headers.Add("Authorization", $"Bearer {token}");
-        request.Headers.Add("apikey", _supabaseKey);
-
-        var response = await _httpClient.SendAsync(request);
-        response.EnsureSuccessStatusCode();
-
-        var content = await response.Content.ReadAsStringAsync();
-        var data = JsonSerializer.Deserialize<List<Vocab>>(content);
-
-        return data ?? new List<Vocab>();
-      }
-      catch (Exception ex)
-      {
-        throw new Exception($"Error fetching data from Supabase: {ex.Message}");
-      }
+      await _supabaseClient.Auth.SetSession(supabaseDto.AccessToken, supabaseDto.RefreshToken);
+      var result = await _supabaseClient.From<Vocab>().Get();
+      return JsonConvert.SerializeObject(result.Models);
     }
 
-    public async Task<Vocab> CreateVocabAsync(string token, VocabDto dto)
+    public async Task<string> CreateVocabAsync(SupabaseSessionDto supabaseDto, VocabDto dto)
     {
+      await _supabaseClient.Auth.SetSession(supabaseDto.AccessToken, supabaseDto.RefreshToken);
+      // 認証済みユーザーの情報を取得
+      var user = await _supabaseClient.Auth.GetUser(supabaseDto.AccessToken) ?? throw new UnauthorizedAccessException("認証されたユーザーが見つかりません");
+
+      var vocab = new AddVocab
+      {
+        Word = dto.Word,
+        Meaning = dto.Meaning,
+        User_Id = user.Id != null ? Guid.Parse(user.Id) : throw new ArgumentNullException(nameof(user.Id), "User ID cannot be null"),
+        Created_At = DateTime.UtcNow,
+        Updated_At = DateTime.UtcNow
+      };
+
       try {
-        var request = new HttpRequestMessage(HttpMethod.Post, $"{_supabaseUrl}/rest/v1/vocab");
-        request.Headers.Add("apikey", _supabaseKey);
-        request.Headers.Add("Authorization", $"Bearer {token}");
 
-        var json = JsonSerializer.Serialize(dto);
-        request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+        // データを挿入
+        var result = await _supabaseClient.From<AddVocab>().Insert(vocab);
 
-        var response = await _httpClient.SendAsync(request);
-        response.EnsureSuccessStatusCode();
-        var content = await response.Content.ReadAsStringAsync();
-        var created = JsonSerializer.Deserialize<List<Vocab>>(content);
-
-        return created?.FirstOrDefault();
-      } catch (HttpRequestException ex) {
-        throw new Exception($"Error creating vocab: {ex.Message}");
+        return JsonConvert.SerializeObject(result.Models.First());
+      } catch (Exception ex) {
+        Console.WriteLine($"Error: {ex.Message}");
+        throw new Exception("データの挿入に失敗しました");
       }
     }
   }

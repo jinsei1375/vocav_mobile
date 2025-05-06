@@ -29,6 +29,26 @@ builder.Services.AddHttpClient();
 builder.Services.AddScoped<IVocabRepository, VocabRepository>();
 builder.Services.AddScoped<VocabService>();
 
+builder.Services.AddSingleton(static provider =>
+{
+    var url = Environment.GetEnvironmentVariable("SUPABASE_URL");
+    var key = Environment.GetEnvironmentVariable("SUPABASE_API_KEY");
+
+    var options = new Supabase.SupabaseOptions
+    {
+        AutoConnectRealtime = true,
+        AutoRefreshToken = true,
+    };
+
+    if (string.IsNullOrEmpty(url))
+    {
+        throw new ArgumentNullException(nameof(url), "SUPABASE_URL environment variable is not set.");
+    }
+
+    var client = new Supabase.Client(url, key, options);
+    return client;
+});
+
 
 var app = builder.Build();
 

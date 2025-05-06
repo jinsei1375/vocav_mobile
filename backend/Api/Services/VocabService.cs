@@ -14,14 +14,14 @@ namespace Api.Services
       _vocabRepository = vocabRepository;
     }
 
-    public async Task<List<Vocab>> GetAllVocabsAsync(string token)
+    public async Task<string> GetAllVocabsAsync(SupabaseSessionDto supabaseDto)
     {
-      return await _vocabRepository.GetVocabsAsync(token);
+      return await _vocabRepository.GetVocabsAsync(supabaseDto);
     }
 
-    public async Task<Vocab> CreateVocabAsync(string token, VocabDto vocabDto)
+    public async Task<string> CreateVocabAsync(SupabaseSessionDto supabaseDto, VocabDto vocabDto)
     {
-      return await _vocabRepository.CreateVocabAsync(token, vocabDto);
+      return await _vocabRepository.CreateVocabAsync(supabaseDto, vocabDto);
     }
   }
 }

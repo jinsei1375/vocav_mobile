@@ -8,17 +8,26 @@ export const VocabForm = () => {
   const [loading, setLoading] = useState(false);
 
   const handleAddVocab = async () => {
-    const { data: session } = await supabase.auth.getSession();
-    const token = session?.session?.access_token;
-    setLoading(true);
+    const session = await supabase.auth.getSession();
+    const accessToken = session.data.session?.access_token;
+    const refreshToken = session.data.session?.refresh_token;
+    const requestBody = {
+      session: {
+        accessToken,
+        refreshToken,
+      },
+      vocab: {
+        word,
+        meaning,
+      },
+    };
 
-    fetch(`${process.env.EXPO_PUBLIC_API_BASE_URL}/vocab`, {
+    fetch(`${process.env.EXPO_PUBLIC_API_BASE_URL}/vocab/create`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ word, meaning }),
+      body: JSON.stringify(requestBody),
     })
       .then((response) => response.json())
       .then(() => {
