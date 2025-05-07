@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import { fetchVocabList } from '@/src/api/api';
-
-type Vocab = {
-  id: number;
-  word: string;
-  meaning: string;
-};
+import { Vocab } from '../interfaces/vocab';
 
 export const VocabList = () => {
   const [vocabs, setVocabs] = useState<Vocab[]>([]);

@@ -1,47 +1,17 @@
 import { useState } from 'react';
 import { Button, Text, TextInput, View } from 'react-native';
-import { supabase } from '../lib/supabaseClient';
+import { createVocab } from '../api/api';
 
 export const VocabForm = () => {
   const [word, setWord] = useState('');
   const [meaning, setMeaning] = useState('');
-  const [loading, setLoading] = useState(false);
 
   const handleAddVocab = async () => {
-    const session = await supabase.auth.getSession();
-    const accessToken = session.data.session?.access_token;
-    const refreshToken = session.data.session?.refresh_token;
-    const requestBody = {
-      session: {
-        accessToken,
-        refreshToken,
-      },
-      vocab: {
-        word,
-        meaning,
-      },
-    };
-
-    fetch(`${process.env.EXPO_PUBLIC_API_BASE_URL}/vocab/create`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(requestBody),
-    })
-      .then((response) => response.json())
-      .then(() => {
-        setWord('');
-        setMeaning('');
-        alert('単語が追加されました');
-      })
-      .catch((error) => {
-        console.error(error);
-        alert('エラーが発生しました');
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    createVocab(word, meaning).then(() => {
+      alert('単語が追加されました');
+      setWord('');
+      setMeaning('');
+    });
   };
   return (
     <View style={{ padding: 16 }}>
