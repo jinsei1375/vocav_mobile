@@ -23,5 +23,10 @@ namespace Api.Services
     {
       return await _vocabRepository.CreateVocabAsync(supabaseDto, vocabDto);
     }
+
+    public async Task<string> UpdateVocabAsync(SupabaseSessionDto supabaseDto, VocabDto vocabDto)
+    {
+      return await _vocabRepository.UpdateVocabAsync(supabaseDto, vocabDto);
+    }
   }
 }

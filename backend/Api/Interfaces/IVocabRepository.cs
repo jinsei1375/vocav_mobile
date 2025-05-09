@@ -8,5 +8,6 @@ namespace Api.Interfaces
   {
     Task<string> GetVocabsAsync(SupabaseSessionDto supabaseDto);
     Task<string> CreateVocabAsync(SupabaseSessionDto supabaseDto, VocabDto vocabDto);
+    Task<string> UpdateVocabAsync(SupabaseSessionDto supabaseDto, VocabDto vocabDto);
   }
 }

@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Api.Models.Entities;
 using Api.Services;
 using Api.Models.Dtos;
 
@@ -27,6 +26,13 @@ namespace Api.Controllers
     public async Task<IActionResult> CreateVocab([FromBody] CreateVocabRequest request)
     {
       var result = await _vocabService.CreateVocabAsync(request.Session, request.Vocab);
+      return Ok(result);
+    }
+
+    [HttpPost("update")]
+    public async Task<IActionResult> UpdateVocab([FromBody] UpdateVocabRequest request)
+    {
+      var result = await _vocabService.UpdateVocabAsync(request.Session, request.Vocab);
       return Ok(result);
     }
   }
