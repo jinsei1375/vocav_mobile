@@ -1,7 +1,4 @@
-import { StyleSheet } from 'react-native';
-
-import EditScreenInfo from '@/src/components/EditScreenInfo';
-import { Text, View } from '@/src/components/Themed';
+import { ScrollView, StyleSheet } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
 import { AuthButton } from '@/src/components/AuthButton';
 import { VocabList } from '@/src/components/VocabList';
@@ -11,19 +8,19 @@ WebBrowser.maybeCompleteAuthSession();
 
 export default function TabOneScreen() {
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <AuthButton />
       <VocabForm />
       <VocabList />
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    paddingVertical: 20,
   },
   title: {
     fontSize: 20,
