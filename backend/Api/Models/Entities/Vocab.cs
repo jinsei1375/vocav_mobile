@@ -38,6 +38,12 @@ namespace Api.Models.Entities
   [Table("vocab")]
   public class AddVocab : BaseModel
   {
+    public AddVocab() {}
+    [PrimaryKey("id", false)]
+    // [Column("id")]　Column属性つけると、Supabaseのテーブルにidがないとエラーになる
+    [JsonProperty("id")]
+    public long Id { get; set; }
+    
     [Column("user_id")]
     [JsonProperty("user_id")]
     public Guid User_Id { get; set; } = Guid.Empty;

@@ -39,10 +39,7 @@ namespace Api.Repositories
 
       try {
         var result = await _supabaseClient.From<AddVocab>().Insert(vocab);
-        // resultの中身をconsole.logに出力
-        Console.WriteLine(JsonConvert.SerializeObject(result));
-        var inserted = result.Models.First(); 
-        return JsonConvert.SerializeObject(inserted);
+        return JsonConvert.SerializeObject(result.Models.First());
       } catch (Exception ex) {
         Console.WriteLine($"Error: {ex.Message}");
         throw new Exception("データの挿入に失敗しました");
