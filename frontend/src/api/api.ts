@@ -27,7 +27,7 @@ export const fetchVocabList = async (): Promise<Vocab[]> => {
   return await response.json();
 };
 
-export const createVocab = async (word: string, meaning: string) => {
+export const createVocab = async (word: string, meaning: string): Promise<Vocab> => {
   const { accessToken, refreshToken } = await getSessionTokens();
 
   const requestBody = {
@@ -41,23 +41,17 @@ export const createVocab = async (word: string, meaning: string) => {
     },
   };
 
-  fetch(`${process.env.EXPO_PUBLIC_API_BASE_URL}/vocab/create`, {
+  const response = await fetch(`${process.env.EXPO_PUBLIC_API_BASE_URL}/vocab/create`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(requestBody),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error('Failed to create vocab');
-      }
-      return response.json();
-    })
-    .catch((error) => {
-      console.error(error);
-      alert('エラーが発生しました');
-    });
+  });
+  if (!response.ok) {
+    throw new Error('Failed to create vocab');
+  }
+  return await response.json();
 };
 
 export const updateVocab = async (id: number, word: string, meaning: string): Promise<Vocab> => {

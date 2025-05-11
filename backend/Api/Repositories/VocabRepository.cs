@@ -24,6 +24,7 @@ namespace Api.Repositories
 
     public async Task<string> CreateVocabAsync(SupabaseSessionDto supabaseDto, VocabDto dto)
     {
+      await _supabaseClient.InitializeAsync();
       await _supabaseClient.Auth.SetSession(supabaseDto.AccessToken, supabaseDto.RefreshToken);
       var user = await _supabaseClient.Auth.GetUser(supabaseDto.AccessToken) ?? throw new UnauthorizedAccessException("認証されたユーザーが見つかりません");
 
@@ -38,8 +39,10 @@ namespace Api.Repositories
 
       try {
         var result = await _supabaseClient.From<AddVocab>().Insert(vocab);
-
-        return JsonConvert.SerializeObject(result.Models.First());
+        // resultの中身をconsole.logに出力
+        Console.WriteLine(JsonConvert.SerializeObject(result));
+        var inserted = result.Models.First(); 
+        return JsonConvert.SerializeObject(inserted);
       } catch (Exception ex) {
         Console.WriteLine($"Error: {ex.Message}");
         throw new Exception("データの挿入に失敗しました");

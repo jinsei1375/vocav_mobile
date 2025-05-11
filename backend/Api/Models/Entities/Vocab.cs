@@ -12,7 +12,7 @@ namespace Api.Models.Entities
     [PrimaryKey("id", false)]
     [Column("id")]
     [JsonProperty("id")]
-    public long Id { get; private set; } 
+    public long Id { get; set; } 
 
     [Column("user_id")]
     [JsonProperty("user_id")]
@@ -38,8 +38,6 @@ namespace Api.Models.Entities
   [Table("vocab")]
   public class AddVocab : BaseModel
   {
-    public AddVocab() {}
-
     [Column("user_id")]
     [JsonProperty("user_id")]
     public Guid User_Id { get; set; } = Guid.Empty;
