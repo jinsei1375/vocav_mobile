@@ -71,10 +71,6 @@ namespace Api.Models.Entities
     [JsonProperty("id")]
     public long Id { get; set; } 
 
-    [Column("user_id")]
-    [JsonProperty("user_id")]
-    public Guid User_Id { get; set; } = Guid.Empty;
-
     [Column("word")]
     [JsonProperty("word")]
     public string Word { get; set; } = string.Empty;

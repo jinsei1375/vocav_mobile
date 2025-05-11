@@ -15,6 +15,12 @@ namespace Api.Models.Dtos
 
     [JsonPropertyName("meaning")]
     public string Meaning { get; set; } = string.Empty;
+
+    [JsonPropertyName("created_at")]
+    public DateTime Created_At { get; set; }
+
+    [JsonPropertyName("updated_at")]
+    public DateTime Updated_At { get; set; }
   }
 
   public class CreateVocabRequest

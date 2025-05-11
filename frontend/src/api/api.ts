@@ -59,3 +59,31 @@ export const createVocab = async (word: string, meaning: string) => {
       alert('エラーが発生しました');
     });
 };
+
+export const updateVocab = async (id: number, word: string, meaning: string): Promise<Vocab> => {
+  const { accessToken, refreshToken } = await getSessionTokens();
+
+  const requestBody = {
+    session: {
+      accessToken,
+      refreshToken,
+    },
+    vocab: {
+      id,
+      word,
+      meaning,
+    },
+  };
+
+  const response = await fetch(`${process.env.EXPO_PUBLIC_API_BASE_URL}/vocab/update`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(requestBody),
+  });
+  if (!response.ok) {
+    throw new Error('Failed to update vocab');
+  }
+  return await response.json();
+};

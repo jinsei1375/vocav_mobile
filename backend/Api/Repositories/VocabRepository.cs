@@ -56,8 +56,7 @@ namespace Api.Repositories
         Id = dto.Id ?? throw new ArgumentNullException(nameof(dto.Id), "ID cannot be null"),
         Word = dto.Word,
         Meaning = dto.Meaning,
-        User_Id = user.Id != null ? Guid.Parse(user.Id) : throw new ArgumentNullException(nameof(user.Id), "User ID cannot be null"),
-        Updated_At = DateTime.UtcNow
+        Updated_At = DateTime.UtcNow,
       };
 
       try {

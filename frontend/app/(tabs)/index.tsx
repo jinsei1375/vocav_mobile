@@ -12,8 +12,6 @@ WebBrowser.maybeCompleteAuthSession();
 export default function TabOneScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab One two</Text>
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
       <AuthButton />
       <VocabForm />
       <VocabList />
