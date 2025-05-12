@@ -35,5 +35,12 @@ namespace Api.Controllers
       var result = await _vocabService.UpdateVocabAsync(request.Session, request.Vocab);
       return Ok(result);
     }
+
+    [HttpPost("delete")]
+    public async Task<IActionResult> DeleteVocab([FromBody] DeleteVocabRequest request)
+    {
+      var result = await _vocabService.DeleteVocabAsync(request.Session, request.Id);
+      return Ok(result);
+    }
   }
 }

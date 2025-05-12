@@ -34,4 +34,10 @@ namespace Api.Models.Dtos
     public required SupabaseSessionDto Session { get; set; }
     public required VocabDto Vocab { get; set; }
   }
+
+  public class DeleteVocabRequest
+  {
+    public required SupabaseSessionDto Session { get; set; }
+    public required long Id { get; set; }
+  }
 }

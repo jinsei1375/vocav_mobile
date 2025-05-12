@@ -28,5 +28,10 @@ namespace Api.Services
     {
       return await _vocabRepository.UpdateVocabAsync(supabaseDto, vocabDto);
     }
+
+    public async Task<string> DeleteVocabAsync(SupabaseSessionDto supabaseDto, long id)
+    {
+      return await _vocabRepository.DeleteVocabAsync(supabaseDto, id);
+    }
   }
 }

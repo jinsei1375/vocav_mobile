@@ -71,5 +71,24 @@ namespace Api.Repositories
         throw new Exception("データの更新に失敗しました");
       }
     }
+
+    public async Task<string> DeleteVocabAsync(SupabaseSessionDto supabaseDto, long id)
+    {
+      await _supabaseClient.Auth.SetSession(supabaseDto.AccessToken, supabaseDto.RefreshToken);
+      var user = await _supabaseClient.Auth.GetUser(supabaseDto.AccessToken) ?? throw new UnauthorizedAccessException("認証されたユーザーが見つかりません");
+
+      try {
+        await _supabaseClient
+          .From<Vocab>()
+          .Where(x => x.Id == id)
+          .Delete();
+
+      // 200だけ返す
+      return JsonConvert.SerializeObject(new {success = true});
+      } catch (Exception ex) {
+        Console.WriteLine($"Error: {ex.Message}");
+        throw new Exception("データの削除に失敗しました");
+      }
+    }
   }
 }

@@ -81,3 +81,26 @@ export const updateVocab = async (id: number, word: string, meaning: string): Pr
   }
   return await response.json();
 };
+
+export const deleteVocab = async (id: number): Promise<void> => {
+  const { accessToken, refreshToken } = await getSessionTokens();
+
+  const requestBody = {
+    session: {
+      accessToken,
+      refreshToken,
+    },
+    id,
+  };
+
+  const response = await fetch(`${process.env.EXPO_PUBLIC_API_BASE_URL}/vocab/delete`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(requestBody),
+  });
+  if (!response.ok) {
+    throw new Error('Failed to delete vocab');
+  }
+};

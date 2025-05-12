@@ -5,8 +5,7 @@ import { VocabList } from '@/src/components/VocabList';
 import { VocabForm } from '@/src/components/VocabForm';
 import { useEffect, useState } from 'react';
 import { Vocab } from '@/src/interfaces/vocab';
-import { createVocab, fetchVocabList, updateVocab } from '@/src/api/api';
-import { Text } from 'react-native';
+import { createVocab, deleteVocab, fetchVocabList, updateVocab } from '@/src/api/api';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -32,6 +31,15 @@ export default function TabOneScreen() {
   const handleEdit = (vocab: Vocab) => {
     setEditTarget(vocab);
     setModalVisible(true);
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      await deleteVocab(id);
+      setVocabs((prev) => prev.filter((vocab) => vocab.id !== id));
+    } catch (err: any) {
+      setError(err.message);
+    }
   };
 
   const handleSubmit = async (word: string, meaning: string) => {
@@ -62,7 +70,7 @@ export default function TabOneScreen() {
         initialMeaning={editTarget?.meaning}
         isEdit={!!editTarget}
       />
-      <VocabList vocabs={vocabs} onEdit={handleEdit} />
+      <VocabList vocabs={vocabs} onEdit={handleEdit} onDelete={handleDelete} />
     </ScrollView>
   );
 }

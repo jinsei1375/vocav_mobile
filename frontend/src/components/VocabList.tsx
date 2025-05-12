@@ -5,9 +5,10 @@ import { Button } from 'react-native';
 type VocabListProps = {
   vocabs: Vocab[];
   onEdit: (vocab: Vocab) => void;
+  onDelete: (id: number) => void;
 };
 
-export const VocabList = ({ vocabs, onEdit }: VocabListProps) => {
+export const VocabList = ({ vocabs, onEdit, onDelete }: VocabListProps) => {
   return (
     <View style={styles.container}>
       {vocabs.map((vocab) => (
@@ -21,6 +22,7 @@ export const VocabList = ({ vocabs, onEdit }: VocabListProps) => {
           <Text style={{ marginRight: 8 }}>{vocab.created_at}</Text>
           <Text style={{ marginRight: 8 }}>{vocab.updated_at}</Text>
           <Button title="編集" onPress={() => onEdit(vocab)} />
+          <Button title="削除" onPress={() => onDelete(vocab.id)} />
         </View>
       ))}
     </View>
