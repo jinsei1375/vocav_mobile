@@ -1,4 +1,4 @@
-import { ActivityIndicator, Button, ScrollView, StyleSheet } from 'react-native';
+import { ActivityIndicator, Alert, Button, ScrollView, StyleSheet } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
 import { AuthButton } from '@/src/components/AuthButton';
 import { VocabList } from '@/src/components/VocabList';
@@ -33,13 +33,26 @@ export default function TabOneScreen() {
     setModalVisible(true);
   };
 
-  const handleDelete = async (id: number) => {
-    try {
-      await deleteVocab(id);
-      setVocabs((prev) => prev.filter((vocab) => vocab.id !== id));
-    } catch (err: any) {
-      setError(err.message);
-    }
+  const handleDelete = (id: number) => {
+    const doDelete = async () => {
+      try {
+        await deleteVocab(id);
+        setVocabs((prev) => prev.filter((vocab) => vocab.id !== id));
+      } catch (err: any) {
+        setError(err.message);
+      }
+    };
+
+    Alert.alert('確認', '本当に削除しますか？', [
+      { text: 'キャンセル', style: 'cancel' },
+      {
+        text: '削除',
+        style: 'destructive',
+        onPress: () => {
+          doDelete();
+        },
+      },
+    ]);
   };
 
   const handleSubmit = async (word: string, meaning: string) => {
