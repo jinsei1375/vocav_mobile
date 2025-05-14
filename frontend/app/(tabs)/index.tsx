@@ -6,6 +6,7 @@ import { VocabForm } from '@/src/components/VocabForm';
 import { useEffect, useState } from 'react';
 import { Vocab } from '@/src/interfaces/vocab';
 import { createVocab, deleteVocab, fetchVocabList, updateVocab } from '@/src/api/api';
+import Toast from 'react-native-root-toast';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -38,6 +39,10 @@ export default function TabOneScreen() {
       try {
         await deleteVocab(id);
         setVocabs((prev) => prev.filter((vocab) => vocab.id !== id));
+        Toast.show('削除しました', {
+          duration: Toast.durations.SHORT,
+          position: Toast.positions.TOP,
+        });
       } catch (err: any) {
         setError(err.message);
       }
@@ -61,10 +66,17 @@ export default function TabOneScreen() {
       setVocabs((prev) =>
         prev.map((vocab) => (vocab.id === updated.id ? { ...vocab, ...updated } : vocab))
       );
+      Toast.show('更新しました', {
+        duration: Toast.durations.SHORT,
+        position: Toast.positions.TOP,
+      });
     } else {
       const created = await createVocab(word, meaning);
-      console.log('created', created);
       setVocabs((prev) => [created, ...prev]);
+      Toast.show('追加しました', {
+        duration: Toast.durations.SHORT,
+        position: Toast.positions.TOP,
+      });
     }
     setModalVisible(false);
   };
