@@ -85,7 +85,6 @@ export default function TabOneScreen() {
   // if (error) return <Text>{error}</Text>;
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <AuthButton />
       <Button title="単語を追加" onPress={handleAdd} />
       <VocabForm
         visible={modalVisible}

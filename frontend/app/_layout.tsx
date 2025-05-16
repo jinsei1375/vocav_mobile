@@ -7,6 +7,8 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/src/components/useColorScheme';
+import { AuthProvider, useAuth } from '@/src/contexts/AuthContext';
+import { Button } from 'react-native';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -49,11 +51,42 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-      </Stack>
-    </ThemeProvider>
+    <AuthProvider>
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <AuthStack />
+      </ThemeProvider>
+    </AuthProvider>
+  );
+}
+
+// 認証状態によって表示するStackを切り替え
+function AuthStack() {
+  const { user, loading, signOut } = useAuth();
+
+  if (loading) return null;
+
+  return (
+    <Stack>
+      {user ? (
+        <Stack.Screen
+          name="(tabs)"
+          options={{
+            headerShown: true,
+            headerRight: () => (
+              <Button
+                title="ログアウト"
+                onPress={async () => {
+                  await signOut();
+                  // 認証状態が変わるので自動でlogin画面へ遷移
+                }}
+              />
+            ),
+          }}
+        />
+      ) : (
+        <Stack.Screen name="login" options={{ headerShown: false }} />
+      )}
+      <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+    </Stack>
   );
 }
