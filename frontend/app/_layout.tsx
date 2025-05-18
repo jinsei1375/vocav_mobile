@@ -1,92 +1,89 @@
+import { Button, TouchableOpacity, View, Modal, StyleSheet } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/src/components/useColorScheme';
+import { useState } from 'react';
 import { AuthProvider, useAuth } from '@/src/contexts/AuthContext';
-import { Button } from 'react-native';
+import { Stack } from 'expo-router';
 
-export {
-  // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
-} from 'expo-router';
-
-export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: '(tabs)',
-};
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
-
-export default function RootLayout() {
-  const [loaded, error] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-    ...FontAwesome.font,
-  });
-
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
-  useEffect(() => {
-    if (error) throw error;
-  }, [error]);
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
-
-  return <RootLayoutNav />;
-}
-
-function RootLayoutNav() {
-  const colorScheme = useColorScheme();
-
+export default function AppLayout() {
   return (
     <AuthProvider>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <AuthStack />
-      </ThemeProvider>
+      <RootLayout />
     </AuthProvider>
   );
 }
 
-// 認証状態によって表示するStackを切り替え
-function AuthStack() {
-  const { user, loading, signOut } = useAuth();
+function RootLayout() {
+  const { user, loading, signIn, signOut } = useAuth();
+  const [drawerVisible, setDrawerVisible] = useState(false);
 
   if (loading) return null;
 
   return (
     <Stack>
-      {user ? (
-        <Stack.Screen
-          name="(tabs)"
-          options={{
-            headerShown: true,
-            headerRight: () => (
-              <Button
-                title="ログアウト"
-                onPress={async () => {
-                  await signOut();
-                  // 認証状態が変わるので自動でlogin画面へ遷移
-                }}
-              />
+      <Stack.Screen
+        name={user ? '(tabs)' : 'login'}
+        options={{
+          headerShown: true,
+          title: 'Vocab',
+          headerRight: () =>
+            user ? (
+              <>
+                <TouchableOpacity
+                  onPress={() => setDrawerVisible(true)}
+                  style={{ marginRight: 16 }}
+                >
+                  <FontAwesome name="google" size={24} color="#4285F4" />
+                </TouchableOpacity>
+                <Modal
+                  visible={drawerVisible}
+                  animationType="slide"
+                  transparent
+                  onRequestClose={() => setDrawerVisible(false)}
+                >
+                  <TouchableOpacity
+                    style={styles.overlay}
+                    activeOpacity={1}
+                    onPressOut={() => setDrawerVisible(false)}
+                  >
+                    <View style={styles.drawer}>
+                      <Button
+                        title="ログアウト"
+                        onPress={async () => {
+                          setDrawerVisible(false);
+                          await signOut();
+                        }}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                </Modal>
+              </>
+            ) : (
+              <Button title="ログイン" onPress={signIn} />
             ),
-          }}
-        />
-      ) : (
-        <Stack.Screen name="login" options={{ headerShown: false }} />
-      )}
+        }}
+      />
       <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
     </Stack>
   );
 }
+
+const styles = StyleSheet.create({
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.2)',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-end',
+  },
+  drawer: {
+    width: 200,
+    height: '100%',
+    backgroundColor: '#fff',
+    padding: 24,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+});

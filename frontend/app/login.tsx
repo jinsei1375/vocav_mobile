@@ -18,7 +18,7 @@ export default function LoginScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>ログインしてください</Text>
+      <Text style={styles.title}>Googleアカウントでログインしてください</Text>
       <Button title="Googleでログイン" onPress={signIn} />
     </View>
   );
